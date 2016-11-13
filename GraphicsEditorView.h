@@ -13,7 +13,9 @@
 #include <gl/glu.h>
 #include <gl/glaux.h>
 
+
 #include "cgObject.h"
+#include "cgCommandManager.h"
 #include <vector> //ÈÝÆ÷
 using namespace std;
 
@@ -36,6 +38,7 @@ public:
 
 	int m_iWindowWidth;
 	int m_iWindowHeight;
+	cgCommandManager  m_cgComandManager;
 
 	vector<cgObject*> m_cgEntitys;
 	void SetEntitysStatus(cgEntityStatus) ;
@@ -92,6 +95,15 @@ protected:
 	afx_msg void OnUpdateButtonCircle(CCmdUI* pCmdUI);
 	afx_msg void OnButtonB();
 	afx_msg void OnUpdateButtonB(CCmdUI* pCmdUI);
+	afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
+	afx_msg void OnEditColor();
+	afx_msg void OnUpdateEditColor(CCmdUI* pCmdUI);
+	afx_msg void OnUndo();
+	afx_msg void OnUpdateUndo(CCmdUI* pCmdUI);
+	afx_msg void OnRedo();
+	afx_msg void OnUpdateRedo(CCmdUI* pCmdUI);
+	afx_msg void OnEditCut();
+	afx_msg void OnUpdateEditCut(CCmdUI* pCmdUI);
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 };

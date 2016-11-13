@@ -31,7 +31,7 @@ void cgPolygon::Darw()
 {
 	int i=0;
 	glLineWidth(1.0f);
-	glColor3f(0,0.5,0.5);
+	glColor3f(m_fR,m_fG,m_fB);
 	glBegin(GL_LINES);
 		for(i=0;i<m_count-1;i++)
 		{

@@ -52,6 +52,15 @@ BEGIN_MESSAGE_MAP(CGraphicsEditorView, CView)
 	ON_UPDATE_COMMAND_UI(ID_BUTTON_CIRCLE, OnUpdateButtonCircle)
 	ON_COMMAND(ID_BUTTON_B, OnButtonB)
 	ON_UPDATE_COMMAND_UI(ID_BUTTON_B, OnUpdateButtonB)
+	ON_WM_CONTEXTMENU()
+	ON_COMMAND(ID_EDIT_COLOR, OnEditColor)
+	ON_UPDATE_COMMAND_UI(ID_EDIT_COLOR, OnUpdateEditColor)
+	ON_COMMAND(ID_UNDO, OnUndo)
+	ON_UPDATE_COMMAND_UI(ID_UNDO, OnUpdateUndo)
+	ON_COMMAND(ID_REDO, OnRedo)
+	ON_UPDATE_COMMAND_UI(ID_REDO, OnUpdateRedo)
+	ON_COMMAND(ID_EDIT_CUT, OnEditCut)
+	ON_UPDATE_COMMAND_UI(ID_EDIT_CUT, OnUpdateEditCut)
 	//}}AFX_MSG_MAP
 	// Standard printing commands
 	ON_COMMAND(ID_FILE_PRINT, CView::OnFilePrint)
@@ -305,6 +314,15 @@ void CGraphicsEditorView::OnLButtonDown(UINT nFlags, CPoint point)
 			m_cgCurrentEntity->SetStatus(Selected);
 			m_cgEntitys.push_back(m_cgCurrentEntity);
 			
+			//撤销与反撤销
+			cgCommand c;
+			
+			c.pObj = m_cgCurrentEntity;
+			c.commandType = NEW;
+			m_cgComandManager.AddUndo(c);
+			m_cgComandManager.ClearRedo();
+			//
+
 			m_cgCurrentEntity = 0;
 		}
 		Invalidate(FALSE);
@@ -552,6 +570,7 @@ void CGraphicsEditorView::OnRButtonDown(UINT nFlags, CPoint point)
 	
 	CView::OnRButtonDown(nFlags, point);
 }
+
 //=======画折线======//
 void CGraphicsEditorView::OnButtonBackline() 
 {
@@ -624,4 +643,139 @@ void CGraphicsEditorView::OnUpdateButtonB(CCmdUI* pCmdUI)
 	}
 	if (!m_cgCurrentEntity->m_eStatus == Inputing) pCmdUI->SetCheck(0);//如果是inputing则不选中
 	else pCmdUI->SetCheck(1);//其余情况选中
+}
+
+//右键弹出菜单的响应函数
+void CGraphicsEditorView::OnContextMenu(CWnd* pWnd, CPoint point) 
+{        
+	CMenu menu; //创建一个菜单对象        
+	VERIFY(menu.LoadMenu(IDR_POP_MENU));//载入指定ID的菜单           
+	CMenu* pPopup = menu.GetSubMenu(0);//函数取得被指定菜单激活的下拉式菜单或子菜单的句柄         
+	ASSERT(pPopup != NULL); //断言处理
+	
+	CWnd* pWndPopupOwner = this;  //获得当前窗口的句柄         
+	while (pWndPopupOwner->GetStyle() & WS_CHILD)            
+		pWndPopupOwner = pWndPopupOwner->GetParent();           
+
+	pPopup->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y,
+		pWndPopupOwner);    
+}
+
+void CGraphicsEditorView::OnEditColor() 
+{
+		CColorDialog dlgColor;//创建颜色对话框
+	cgObject *pObject=0;
+	
+	//对整个上转型对象进行遍历，找出当前选中的图形对象
+	for (int i=0; i<m_cgEntitys.size(); i++)
+	{
+		if (m_cgEntitys[i]->GetStatus() == Selected || m_cgEntitys[i]->GetStatus() == Moving)
+		//判断是否选中
+		{
+			pObject = m_cgEntitys[i];
+			break;
+		}
+	}
+
+	if(!pObject) return;//如果没有图形被选中就返回，这样不需要改变菜单的状态
+
+	COLORREF color;
+
+	color = RGB(pObject->GetColorR()*255,pObject->GetColorG()*255,pObject->GetColorB()*255);//获取当前图形的颜色
+    dlgColor.m_cc.Flags |= CC_FULLOPEN|CC_RGBINIT;   // CC_RGBINIT可以让上次选择的颜色作为初始颜色显示出来
+    dlgColor.m_cc.rgbResult = color;        //记录上次选择的颜色
+	
+	//更新颜色
+	if(dlgColor.DoModal() == IDOK)
+	{
+		color = dlgColor.m_cc.rgbResult;
+		
+		int r = GetRValue(color);
+		int g = GetGValue(color);
+		int b = GetBValue(color);
+
+		pObject->SetColor(r/255.0f,g/255.0f,b/255.0f);
+
+		Invalidate(FALSE);//强制重绘
+	}
+}
+
+void CGraphicsEditorView::OnUpdateEditColor(CCmdUI* pCmdUI) 
+{
+	//如果没有选择图元，不可用且灰色
+	pCmdUI->Enable(FALSE);
+	for (int i=0; i<m_cgEntitys.size(); i++)
+	{
+		if (m_cgEntitys[i]->GetStatus() == Selected || m_cgEntitys[i]->GetStatus() == Moving)
+		{
+			pCmdUI->Enable(TRUE);
+			return;
+		}
+	}
+	
+}
+
+void CGraphicsEditorView::OnRedo() 
+{
+	m_cgComandManager.Redo(m_cgEntitys);
+	Invalidate(FALSE);//强制重绘
+}
+
+void CGraphicsEditorView::OnUpdateRedo(CCmdUI* pCmdUI) 
+{
+	pCmdUI->Enable(!m_cgComandManager.IsRedoEmpty());
+	
+}
+
+void CGraphicsEditorView::OnUndo() 
+{
+	m_cgComandManager.Undo(m_cgEntitys);
+	Invalidate(FALSE);//强制重绘
+}
+
+void CGraphicsEditorView::OnUpdateUndo(CCmdUI* pCmdUI) 
+{
+	pCmdUI->Enable(!m_cgComandManager.IsUndoEmpty());
+}
+
+void CGraphicsEditorView::OnEditCut() 
+{
+		// 删除选中的图元
+	for (int i=0; i<m_cgEntitys.size(); i++)
+	{
+		if (m_cgEntitys[i]->GetStatus() == Selected || m_cgEntitys[i]->GetStatus() == Moving)
+		//判断是否选中
+		{
+			cgObject *pObject = m_cgEntitys[i];
+			m_cgEntitys.erase(m_cgEntitys.begin()+i);// 删除
+
+			//撤销与反撤销
+			cgCommand c;
+			
+			c.pObj = pObject;
+			c.commandType = DELE;
+			m_cgComandManager.AddUndo(c);
+			m_cgComandManager.ClearRedo();
+			//
+
+			Invalidate(FALSE);//强制重绘
+			return;
+		}
+	}
+	
+}
+
+void CGraphicsEditorView::OnUpdateEditCut(CCmdUI* pCmdUI) 
+{
+//如果没有选择图元，不可用且灰色
+	pCmdUI->Enable(FALSE);
+	for (int i=0; i<m_cgEntitys.size(); i++)
+	{
+		if (m_cgEntitys[i]->GetStatus() == Selected || m_cgEntitys[i]->GetStatus() == Moving)
+		{
+			pCmdUI->Enable(TRUE);
+			return;
+		}
+	}
+	
 }

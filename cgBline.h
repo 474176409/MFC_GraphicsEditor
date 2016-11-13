@@ -11,10 +11,17 @@
 
 #include "cgObject.h"
 #include "cgPoint.h"
+#include "vector"
+using namespace std;
 
 class cgBline : public cgObject  
 {
 public:
+	BOOL IntersectLine(CPoint p1, CPoint p2, CPoint& p);
+	void sol4();
+	void sol3(double t);
+	double sol2(int nn,int k);
+	void sol1();
 	int count;
 	cgPoint drawBezier(cgPoint A, cgPoint B, cgPoint C, cgPoint D,float t);
 	void drawLine(cgPoint p1, cgPoint p2);
@@ -28,11 +35,10 @@ public:
 	cgBline();
 	virtual ~cgBline();
 
+	CPoint tmp;
+	vector<CPoint> bLine;  //实体
 	CPoint m_tempPoint;//临时变量，存贮鼠标点击位置值
-	cgPoint m_points[4];//三次B曲线
-
-	float max_x,max_y;
-	float min_x,min_y;
+	int  PointSort;
 	
 };
 

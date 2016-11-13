@@ -36,7 +36,7 @@ void cgCircle::Darw()
 	float x=(x1+x2)/2.0;
 	float y=(y1+y2)/2.0;
 	R=sqrt((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2))/2;
-	glColor3f(1,0,0);
+	glColor3f(m_fR,m_fG,m_fB);
 	glBegin(GL_LINE_LOOP);
      for(i=0; i<n; ++i)
          glVertex2f(x+R*cos(2*3.1415926/n*i), y+R*sin(2*3.1415926/n*i));

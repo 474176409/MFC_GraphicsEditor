@@ -37,7 +37,7 @@ cgLine::~cgLine()
 void cgLine::Darw()
 {
 	glLineWidth(m_fWidth);
-	glColor3f(0,0.4,0.6);
+	glColor3f(m_fR,m_fG,m_fB);
 	glBegin(GL_LINES);
 		glVertex2f(m_ptP1.m_fX,m_ptP1.m_fY);
 		//glVertex2f(m_ptP1.m_fX,m_ptP1.m_fY);

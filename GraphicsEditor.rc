@@ -103,6 +103,8 @@ BEGIN
     BUTTON      ID_BUTTON_BACKLINE
     BUTTON      ID_BUTTON_CIRCLE
     BUTTON      ID_BUTTON_B
+    BUTTON      ID_UNDO
+    BUTTON      ID_REDO
 END
 
 
@@ -144,6 +146,15 @@ BEGIN
     POPUP "°ïÖú(&H)"
     BEGIN
         MENUITEM "¹ØÓÚ GraphicsEditor(&A)...",  ID_APP_ABOUT
+    END
+END
+
+IDR_POP_MENU MENU DISCARDABLE 
+BEGIN
+    POPUP "pop"
+    BEGIN
+        MENUITEM "É¾³ý",                        ID_EDIT_CUT
+        MENUITEM "ÑÕÉ«...",                     ID_EDIT_COLOR
     END
 END
 

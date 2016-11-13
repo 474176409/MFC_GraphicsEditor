@@ -14,10 +14,11 @@ Class2=CGraphicsEditorDoc
 Class3=CGraphicsEditorView
 Class4=CMainFrame
 
-ResourceCount=2
+ResourceCount=3
 Resource1=IDR_MAINFRAME
 Class5=CAboutDlg
-Resource2=IDD_ABOUTBOX
+Resource2=IDR_POP_MENU
+Resource3=IDD_ABOUTBOX
 
 [CLS:CGraphicsEditorApp]
 Type=0
@@ -38,7 +39,7 @@ ImplementationFile=GraphicsEditorView.cpp
 Filter=C
 BaseClass=CView
 VirtualFilter=VWC
-LastObject=ID_BUTTON_LINE
+LastObject=ID_EDIT_CUT
 
 
 [CLS:CMainFrame]
@@ -46,7 +47,9 @@ Type=0
 HeaderFile=MainFrm.h
 ImplementationFile=MainFrm.cpp
 Filter=T
-LastObject=ID_BUTTON_TRIANGLE
+LastObject=ID_EDIT_CUT
+BaseClass=CFrameWnd
+VirtualFilter=fWC
 
 
 
@@ -126,5 +129,14 @@ Command13=ID_BUTTON_POLYGON
 Command14=ID_BUTTON_BACKLINE
 Command15=ID_BUTTON_CIRCLE
 Command16=ID_BUTTON_B
-CommandCount=16
+Command17=ID_UNDO
+Command18=ID_REDO
+CommandCount=18
+
+[MNU:IDR_POP_MENU]
+Type=1
+Class=CGraphicsEditorView
+Command1=ID_EDIT_CUT
+Command2=ID_EDIT_COLOR
+CommandCount=2
 

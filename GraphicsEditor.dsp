@@ -104,6 +104,10 @@ SOURCE=.\cgCircle.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\cgCommandManager.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\cgLine.cpp
 # End Source File
 # Begin Source File
@@ -166,6 +170,10 @@ SOURCE=.\cgBline.h
 # Begin Source File
 
 SOURCE=.\cgCircle.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\cgCommandManager.h
 # End Source File
 # Begin Source File
 

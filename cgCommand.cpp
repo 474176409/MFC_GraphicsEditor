@@ -1,10 +1,10 @@
-// cgObject.cpp: implementation of the cgObject class.
+// cgCommand.cpp: implementation of the cgCommand class.
 //
 //////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
 #include "GraphicsEditor.h"
-#include "cgObject.h"
+#include "cgCommand.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -16,27 +16,12 @@ static char THIS_FILE[]=__FILE__;
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-cgObject::cgObject()
-{
-	m_fR = 1.0f;
-	m_fG = 1.0f;
-	m_fB = 1.0f;
-
-}
-
-cgObject::~cgObject()
+cgCommand::cgCommand()
 {
 
 }
 
-void cgObject::SetColor(float r,float g, float b)
-{
-	m_fR = r;
-	m_fG = g;
-	m_fB = b;
-}
-
-void cgObject::OnRButtonDown(UINT nFlags, CPoint point)
+cgCommand::~cgCommand()
 {
 
 }

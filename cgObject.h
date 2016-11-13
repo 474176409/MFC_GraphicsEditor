@@ -18,13 +18,24 @@ enum cgEntityStatus//√∂æŸ¿‡–Õ
    Drawing=0, Inputing,InputingEnd,Selected,Moving
 };
 
+struct cgRGB
+{
+	float r;
+	float g;
+	float b;
+};
+
 class cgObject  
 {
 public:
+	void SetColor(float r,float g, float b);
+	float GetColorR(){return m_fR;}
+	float GetColorG(){return m_fG;}
+	float GetColorB(){return m_fB;}
+
 	virtual void OnRButtonDown(UINT nFlags, CPoint point);
 	cgObject();
 	virtual ~cgObject();
-	void SetColor(float r,float g, float b);
 	virtual void Darw()=NULL;
 	virtual void OnLButtonDown(UINT nFlags, CPoint point)=NULL;
 	virtual void OnMouseMove(UINT nFlags, CPoint point) =NULL;
